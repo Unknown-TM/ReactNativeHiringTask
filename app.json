@@ -28,10 +28,11 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION"
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.checkin360.app",
-      "versionCode": 1.3
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -52,8 +53,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "03900aa2-0168-4fd2-8f29-4141faaebd72"
+        "projectId": "32d7153f-5db2-44c5-888f-b6e5788a17f6"
       }
-    }
+    },
+    "owner": "unknown-tm"
   }
 }

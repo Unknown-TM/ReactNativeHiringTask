@@ -1,13 +1,13 @@
 # CheckIn360 - Boarding Pass Scanner & Location Tracker
 
 
-![Login Screen](./assets/login-screen.png)
+![Login Screen](https://github.com/Unknown-TM/Sherlock_Studio-React-Native/blob/features/assets/login-screen.png)
 
-![Barcode Scanner](./assets/scan-screen.png)
+![Barcode Scanner](https://github.com/Unknown-TM/Sherlock_Studio-React-Native/blob/features/assets/scan-screen.png)
 
-![Scan Success](./assets/scan-success-screen.png)
+![Scan Success](https://github.com/Unknown-TM/Sherlock_Studio-React-Native/blob/features/assets/scan-success-screen.png)
 
-![Location Check](./assets/location-check-screen.png)
+![Location Check](https://github.com/Unknown-TM/Sherlock_Studio-React-Native/blob/features/assets/location-check-screen.png)
 
 # Overview
 A comprehensive React Native application demonstrating advanced mobile development skills including UI design, barcode scanning, location services, and state management. Built with Expo and modern React Native best practices.
