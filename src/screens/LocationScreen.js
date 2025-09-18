@@ -8,21 +8,33 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as Location from 'expo-location';
-import { calculateDistance, CONSTANTS } from '../utils/helpers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { 
+  calculateDistance, 
+  CONSTANTS, 
+  isLocationCacheValid, 
+  formatTimestamp 
+} from '../utils/helpers';
 
 // Delhi Airport coordinates and geofence radius
 const DELHI_AIRPORT = CONSTANTS.DELHI_AIRPORT;
 const GEOFENCE_RADIUS = CONSTANTS.GEOFENCE_RADIUS;
 
-const LocationScreen = ({ navigation }) => {
+const LocationScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInsideGeofence, setIsInsideGeofence] = useState(null);
   const [distance, setDistance] = useState(null);
   const [error, setError] = useState(null);
+  const [isUsingCache, setIsUsingCache] = useState(false);
+  const [cacheTimestamp, setCacheTimestamp] = useState(null);
+  
+  // Get the scanned barcode data from navigation params
+  const scannedBarcodeData = route?.params?.scannedData || null;
 
   useEffect(() => {
     requestLocationPermission();
+    loadCachedLocation(); // Automatically load cached location on screen open
   }, []);
 
   const requestLocationPermission = async () => {
@@ -38,12 +50,60 @@ const LocationScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Load cached location data automatically when screen opens
+   * Only loads cache if it matches the current scanned barcode
+   */
+  const loadCachedLocation = async () => {
+    // Only try to load cache if we have a scanned barcode
+    if (!scannedBarcodeData) {
+      return;
+    }
+    
+    try {
+      const cachedData = await AsyncStorage.getItem(CONSTANTS.STORAGE_KEYS.LOCATION_CACHE);
+      if (cachedData) {
+        const parsedCache = JSON.parse(cachedData);
+        if (isLocationCacheValid(parsedCache, scannedBarcodeData, CONSTANTS.LOCATION_CACHE_MAX_AGE)) {
+          // Use cached data immediately - it matches this barcode
+          setLocation(parsedCache.location);
+          setDistance(parsedCache.distance);
+          setIsInsideGeofence(parsedCache.isInsideGeofence);
+          setCacheTimestamp(parsedCache.timestamp);
+          setIsUsingCache(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading cached location:', error);
+    }
+  };
 
-  const getCurrentLocation = async () => {
+
+  const getCurrentLocation = async (forceRefresh = false) => {
     setIsLoading(true);
     setError(null);
+    setIsUsingCache(false);
 
     try {
+      // Check for cached location data first (unless force refresh)
+      if (!forceRefresh && scannedBarcodeData) {
+        const cachedData = await AsyncStorage.getItem(CONSTANTS.STORAGE_KEYS.LOCATION_CACHE);
+        if (cachedData) {
+          const parsedCache = JSON.parse(cachedData);
+          if (isLocationCacheValid(parsedCache, scannedBarcodeData, CONSTANTS.LOCATION_CACHE_MAX_AGE)) {
+            // Use cached data - it matches this barcode
+            setLocation(parsedCache.location);
+            setDistance(parsedCache.distance);
+            setIsInsideGeofence(parsedCache.isInsideGeofence);
+            setCacheTimestamp(parsedCache.timestamp);
+            setIsUsingCache(true);
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
+
+      // Get fresh location data
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setError('Location permission is required');
@@ -72,6 +132,21 @@ const LocationScreen = ({ navigation }) => {
 
       setDistance(calculatedDistance);
       setIsInsideGeofence(calculatedDistance <= GEOFENCE_RADIUS);
+
+      // Cache the location data with barcode information
+      const cacheData = {
+        location: currentLocation,
+        distance: calculatedDistance,
+        isInsideGeofence: calculatedDistance <= GEOFENCE_RADIUS,
+        timestamp: new Date().toISOString(),
+        barcodeData: scannedBarcodeData, // Include the scanned barcode data
+      };
+
+      await AsyncStorage.setItem(
+        CONSTANTS.STORAGE_KEYS.LOCATION_CACHE, 
+        JSON.stringify(cacheData)
+      );
+      setCacheTimestamp(cacheData.timestamp);
 
     } catch (err) {
       setError('Failed to get current location');
@@ -144,18 +219,44 @@ const LocationScreen = ({ navigation }) => {
                 </Text>
               </View>
             )}
+
+            {/* Cache Status Information */}
+            {cacheTimestamp && (
+              <View style={styles.cacheContainer}>
+                <Text style={styles.cacheText}>
+                  {isUsingCache ? 'Using cached data' : 'Fresh location data'}
+                </Text>
+                <Text style={styles.cacheTimestamp}>
+                  Last updated: {formatTimestamp(cacheTimestamp)}
+                </Text>
+              </View>
+            )}
           </View>
         )}
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={getCurrentLocation}
-          disabled={isLoading}
-        >
-          <Text style={styles.buttonText}>
-            {isLoading ? 'Getting Location...' : 'Check My Location'}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          {!location ? (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => getCurrentLocation(false)}
+              disabled={isLoading}
+            >
+              <Text style={styles.buttonText}>
+                {isLoading ? 'Getting Location...' : 'Check My Location'}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.button, styles.refreshButton]}
+              onPress={() => getCurrentLocation(true)}
+              disabled={isLoading}
+            >
+              <Text style={[styles.buttonText, styles.refreshButtonText]}>
+                Update Location
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
         <TouchableOpacity
           style={[styles.button, styles.secondaryButton]}
@@ -270,6 +371,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  cacheContainer: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    backgroundColor: '#f8f9fa',
+    padding: 10,
+    borderRadius: 6,
+  },
+  cacheText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  cacheTimestamp: {
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    marginBottom: 10,
+  },
   button: {
     backgroundColor: '#2196F3',
     paddingHorizontal: 30,
@@ -277,6 +401,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
     alignItems: 'center',
+  },
+  refreshButton: {
+    backgroundColor: '#FF9800',
+  },
+  refreshButtonText: {
+    color: '#fff',
   },
   secondaryButton: {
     backgroundColor: 'transparent',

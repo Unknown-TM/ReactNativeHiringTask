@@ -43,6 +43,40 @@ export const formatCoordinate = (coordinate, decimals = 6) => {
 };
 
 /**
+ * Check if cached location data is still valid for a specific barcode
+ * @param {Object} cachedData - Cached location data
+ * @param {string} barcodeData - The barcode data to check against
+ * @param {number} maxAgeMinutes - Maximum age in minutes (default: 30)
+ * @returns {boolean} True if cache is still valid for this barcode
+ */
+export const isLocationCacheValid = (cachedData, barcodeData, maxAgeMinutes = 30) => {
+  if (!cachedData || !cachedData.timestamp || !cachedData.barcodeData) {
+    return false;
+  }
+  
+  // Check if the barcode matches
+  if (cachedData.barcodeData !== barcodeData) {
+    return false;
+  }
+  
+  const now = new Date().getTime();
+  const cacheTime = new Date(cachedData.timestamp).getTime();
+  const maxAge = maxAgeMinutes * 60 * 1000; // Convert to milliseconds
+  
+  return (now - cacheTime) < maxAge;
+};
+
+/**
+ * Format timestamp for display
+ * @param {string} timestamp - ISO timestamp string
+ * @returns {string} Formatted time string
+ */
+export const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleString();
+};
+
+/**
  * Constants for the app
  */
 export const CONSTANTS = {
@@ -51,7 +85,9 @@ export const CONSTANTS = {
     longitude: 77.1000,
   },
   GEOFENCE_RADIUS: 2, // kilometers
+  LOCATION_CACHE_MAX_AGE: 30, // minutes
   STORAGE_KEYS: {
     USER_DATA: 'userData',
+    LOCATION_CACHE: 'locationCache',
   },
 };

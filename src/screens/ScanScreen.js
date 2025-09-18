@@ -78,7 +78,7 @@ const ScanScreen = ({ navigation }) => {
         },
         {
           text: 'Go to Location',
-          onPress: () => navigation.navigate('LocationScreen'),
+          onPress: () => navigation.navigate('LocationScreen', { scannedData: data }),
         },
       ]
     );
@@ -105,7 +105,7 @@ const ScanScreen = ({ navigation }) => {
   if (hasPermission === false) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>Camera permission is required to scan QR codes</Text>
+        <Text style={styles.message}>Camera permission is required to scan boarding pass barcodes</Text>
         <TouchableOpacity style={styles.button} onPress={getCameraPermissions}>
           <Text style={styles.buttonText}>Grant Permission</Text>
         </TouchableOpacity>
@@ -123,10 +123,12 @@ const ScanScreen = ({ navigation }) => {
             barcodeScannerSettings={{
               barcodeTypes: [
                 'qr',
-                'ean13',
-                'ean8',
+                'pdf417',
+                'aztec',
                 'code128',
                 'code39',
+                'ean13',
+                'ean8',
               ],
             }}
           />
@@ -151,7 +153,7 @@ const ScanScreen = ({ navigation }) => {
       <View style={styles.controls}>
         <Text style={styles.instruction}>
           {isScanning
-            ? 'Position the QR code or barcode within the frame'
+            ? 'Position the boarding pass barcode (QR, PDF417, Aztec) or any barcode within the frame'
             : 'Scan completed successfully!'}
         </Text>
 
@@ -163,10 +165,19 @@ const ScanScreen = ({ navigation }) => {
           )}
 
           <TouchableOpacity
-            style={[styles.button, styles.secondaryButton]}
-            onPress={() => navigation.navigate('LocationScreen')}
+            style={[
+              styles.button, 
+              styles.secondaryButton,
+              !scannedData && styles.disabledButton
+            ]}
+            onPress={() => scannedData && navigation.navigate('LocationScreen', { scannedData: scannedData })}
+            disabled={!scannedData}
           >
-            <Text style={[styles.buttonText, styles.secondaryButtonText]}>
+            <Text style={[
+              styles.buttonText, 
+              styles.secondaryButtonText,
+              !scannedData && styles.disabledButtonText
+            ]}>
               Check Location
             </Text>
           </TouchableOpacity>
@@ -310,6 +321,13 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     color: '#2196F3',
+  },
+  disabledButton: {
+    opacity: 0.5,
+    borderColor: '#ccc',
+  },
+  disabledButtonText: {
+    color: '#ccc',
   },
   message: {
     fontSize: 18,
