@@ -12,12 +12,26 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { validateEmail, CONSTANTS } from '../utils/helpers';
 
+/**
+ * LoginScreen Component
+ * 
+ * Handles user authentication with name and email input.
+ * Validates input and stores user data locally using AsyncStorage.
+ * 
+ * @param {Object} navigation - React Navigation object
+ */
 const LoginScreen = ({ navigation }) => {
+  // State management for form inputs
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
 
+  /**
+   * Handles the login process
+   * Validates user input and stores data locally
+   */
   const handleLogin = async () => {
+    // Input validation
     if (!name.trim()) {
       Alert.alert('Error', 'Please enter your name');
       return;
@@ -34,17 +48,24 @@ const LoginScreen = ({ navigation }) => {
     }
 
     try {
+      // Prepare user data for storage
       const userData = {
         name: name.trim(),
         email: email.trim(),
         loginTime: new Date().toISOString(),
       };
 
+      // Save user data to AsyncStorage
       await AsyncStorage.setItem(CONSTANTS.STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+      
+      // Show success message and navigate to main screen
       Alert.alert('Success', 'Login successful!', [
         {
           text: 'OK',
-          onPress: () => navigation.replace('ScanScreen'),
+          onPress: () => navigation.reset({
+            index: 0,
+            routes: [{ name: 'ScanScreen' }],
+          }),
         },
       ]);
     } catch (error) {

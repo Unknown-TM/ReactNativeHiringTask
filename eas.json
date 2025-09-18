@@ -19,6 +19,12 @@
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
       }
+    },
+    "release": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      }
     }
   },
   "submit": {
