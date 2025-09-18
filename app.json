@@ -31,7 +31,7 @@
         "android.permission.ACCESS_COARSE_LOCATION"
       ],
       "package": "com.checkin360.app",
-      "versionCode": 1
+      "versionCode": 1.3
     },
     "web": {
       "favicon": "./assets/favicon.png"
