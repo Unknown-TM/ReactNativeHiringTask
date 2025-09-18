@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
+/**
+ * SplashScreen Component
+ * 
+ * Displays app branding and loading indicator while the app initializes.
+ * Shows while checking login status and determining initial navigation.
+ */
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>React Native</Text>
-      <Text style={styles.subtitle}>Hiring Task</Text>
+      <Text style={styles.title}>CheckIn360</Text>
+      <Text style={styles.subtitle}>Smart Boarding Pass Scanner</Text>
       <ActivityIndicator size="large" color="#2196F3" style={styles.loader} />
     </View>
   );

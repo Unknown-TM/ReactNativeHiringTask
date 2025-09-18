@@ -9,27 +9,61 @@ import {
 } from 'react-native';
 import { CameraView, Camera } from 'expo-camera';
 
+// Get device dimensions for responsive design
 const { width, height } = Dimensions.get('window');
 
+/**
+ * ScanScreen Component
+ * 
+ * Main screen for QR code and barcode scanning functionality.
+ * Handles camera permissions, scanning logic, and result display.
+ * 
+ * @param {Object} navigation - React Navigation object
+ */
 const ScanScreen = ({ navigation }) => {
+  // State management for camera and scanning
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [isScanning, setIsScanning] = useState(true);
 
+  // Request camera permissions on component mount
   useEffect(() => {
     getCameraPermissions();
   }, []);
 
+  // Set up header navigation button
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={() => navigation.navigate('ProfileScreen')}
+        >
+          <Text style={styles.headerButtonText}>👤</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  /**
+   * Requests camera permissions from the user
+   */
   const getCameraPermissions = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
     setHasPermission(status === 'granted');
   };
 
+  /**
+   * Handles successful barcode/QR code scanning
+   * @param {Object} result - Scanning result containing type and data
+   */
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
     setScannedData(data);
     setIsScanning(false);
+    
+    // Show success alert with options
     Alert.alert(
       'Scan Successful!',
       `Scanned data: ${data}`,
@@ -50,11 +84,15 @@ const ScanScreen = ({ navigation }) => {
     );
   };
 
+  /**
+   * Resets the scanning state to allow new scans
+   */
   const resetScan = () => {
     setScanned(false);
     setScannedData(null);
     setIsScanning(true);
   };
+
 
   if (hasPermission === null) {
     return (
@@ -117,20 +155,23 @@ const ScanScreen = ({ navigation }) => {
             : 'Scan completed successfully!'}
         </Text>
 
-        {!isScanning && (
-          <TouchableOpacity style={styles.button} onPress={resetScan}>
-            <Text style={styles.buttonText}>Scan Again</Text>
-          </TouchableOpacity>
-        )}
+        <View style={styles.buttonContainer}>
+          {!isScanning && (
+            <TouchableOpacity style={styles.button} onPress={resetScan}>
+              <Text style={styles.buttonText}>Scan Again</Text>
+            </TouchableOpacity>
+          )}
 
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
-          onPress={() => navigation.navigate('LocationScreen')}
-        >
-          <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-            Check Location
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.secondaryButton]}
+            onPress={() => navigation.navigate('LocationScreen')}
+          >
+            <Text style={[styles.buttonText, styles.secondaryButtonText]}>
+              Check Location
+            </Text>
+          </TouchableOpacity>
+        </View>
+
       </View>
     </View>
   );
@@ -237,6 +278,12 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    gap: 10,
+  },
   instruction: {
     fontSize: 16,
     color: '#666',
@@ -245,11 +292,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#2196F3',
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
-    marginBottom: 10,
-    minWidth: 200,
+    flex: 1,
     alignItems: 'center',
   },
   secondaryButton: {
@@ -270,6 +316,14 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  headerButton: {
+    marginRight: 10,
+    padding: 8,
+  },
+  headerButtonText: {
+    fontSize: 20,
+    color: '#fff',
   },
 });
 

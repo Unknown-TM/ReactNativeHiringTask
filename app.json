@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "React Native Hiring Task",
-    "slug": "react-native-hiring-task",
+    "name": "CheckIn360",
+    "slug": "checkin360",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -30,7 +30,7 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION"
       ],
-      "package": "com.hiringtask.reactnative"
+      "package": "com.checkin360.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
