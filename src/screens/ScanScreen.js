@@ -7,7 +7,7 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
-import { Camera } from 'expo-camera';
+import { CameraView, Camera } from 'expo-camera';
 
 const { width, height } = Dimensions.get('window');
 
@@ -79,16 +79,16 @@ const ScanScreen = ({ navigation }) => {
     <View style={styles.container}>
       {isScanning ? (
         <View style={styles.cameraContainer}>
-          <Camera
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          <CameraView
+            onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={styles.camera}
-            barCodeScannerSettings={{
-              barCodeTypes: [
-                Camera.Constants.BarCodeType.qr,
-                Camera.Constants.BarCodeType.ean13,
-                Camera.Constants.BarCodeType.ean8,
-                Camera.Constants.BarCodeType.code128,
-                Camera.Constants.BarCodeType.code39,
+            barcodeScannerSettings={{
+              barcodeTypes: [
+                'qr',
+                'ean13',
+                'ean8',
+                'code128',
+                'code39',
               ],
             }}
           />
