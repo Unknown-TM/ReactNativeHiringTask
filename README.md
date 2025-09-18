@@ -1,128 +1,85 @@
-# React Native Intern Hiring Task
+# CheckIn360 - Boarding Pass Scanner & Location Tracker
 
-A mini React Native app demonstrating UI design, QR/Barcode scanning, and location access capabilities.
 
-## Features
+![Login Screen](./assets/login-screen.png)
 
-### ✅ Core Requirements
-- **Login Screen**: Simple name + email input with local storage using AsyncStorage
-- **Boarding Pass Scan Screen**: Camera QR/Barcode scanning with decoded text display
-- **Location Check Screen**: GPS location fetch and geofence comparison (Delhi Airport: 28.5562, 77.1000)
+![Barcode Scanner](./assets/scan-screen.png)
 
-### ✅ Bonus Features
-- **Splash Screen**: Clean loading screen for better UX
-- **Local Storage**: User login data persisted using AsyncStorage
-- **Clean UI**: Modern, responsive design with proper navigation
-- **Error Handling**: Comprehensive error handling for permissions and API calls
-- **Smooth Navigation**: Stack navigation between screens
+![Scan Success](./assets/scan-success-screen.png)
+
+![Location Check](./assets/location-check-screen.png)
+
+# Overview
+A comprehensive React Native application demonstrating advanced mobile development skills including UI design, barcode scanning, location services, and state management. Built with Expo and modern React Native best practices.
 
 ## Technology Stack
 
-- **React Native** with Expo
-- **@react-navigation/native** - Navigation
-- **@react-navigation/stack** - Stack navigation
-- **@react-native-async-storage/async-storage** - Local storage
-- **expo-camera** - Camera access
-- **expo-barcode-scanner** - QR/Barcode scanning
-- **expo-location** - GPS location services
+- **Framework**: React Native with Expo SDK 54
+- **Navigation**: React Navigation Stack
+- **State Management**: React Hooks with AsyncStorage
+- **Camera**: Expo Camera with barcode scanning
+- **Location**: Expo Location with geofencing
+- **Storage**: AsyncStorage for local data persistence
+- **UI**: Custom components with responsive design
 
-## Project Structure
-
-```
-ReactNativeHiringTask/
-├── src/
-│   ├── screens/
-│   │   ├── SplashScreen.js      # Loading screen
-│   │   ├── LoginScreen.js       # User login with validation
-│   │   ├── ScanScreen.js        # QR/Barcode scanning
-│   │   └── LocationScreen.js    # GPS location and geofence
-│   ├── components/              # Reusable components
-│   └── utils/
-│       └── helpers.js           # Utility functions and constants
-├── App.js                       # Main app with navigation
-├── package.json
-└── README.md
-```
-
-## Installation & Setup
+## Quick Start
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-- Expo CLI (`npm install -g @expo/cli`)
-- Android Studio (for Android development)
-- Physical device or emulator
+- **Node.js** (v14 or higher)
+- **Expo CLI**: `npm install -g @expo/cli`
+- **Android Studio** (for Android development)
+- **Xcode** (for iOS development, macOS only)
 
-### Installation Steps
+### Installation & Setup
+```bash
+# Clone and navigate to project
+cd CheckIn360
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ReactNativeHiringTask
-   ```
+# Install dependencies
+npm install
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+# Start Expo development server
+npm start
+```
 
-3. **Start the development server**
-   ```bash
-   npm start
-   ```
+### Running the Application
+```bash
+# Android (recommended for testing)
+npm run android
+# Alternative: Press 'a' in the terminal
 
-4. **Run on device/emulator**
-   - For Android: `npm run android`
-   - For iOS: `npm run ios` (macOS only)
-   - For web: `npm run web`
+# iOS (macOS only)
+npm run ios  
+# Alternative: Press 'i' in the terminal
 
-## How to Test
+# Web (limited functionality)
+npm run web
+```
 
-### 1. Login Screen
-- Enter your name and email
-- Email validation is implemented
-- Data is stored locally using AsyncStorage
-- Successful login navigates to Scan Screen
+### Permission Management
+- **Android**: Settings → Apps → CheckIn360 → Permissions
+- **iOS**: Settings → Privacy → Camera/Location → CheckIn360
 
-### 2. Scan Screen
-- **Camera Permission**: Grant camera permission when prompted
-- **QR Code Scanning**: Point camera at any QR code
-- **Barcode Scanning**: Supports various barcode formats (EAN13, EAN8, Code128, Code39)
-- **Scan Result**: Displays decoded text after successful scan
-- **Navigation**: Options to scan again or proceed to location check
+## Architecture & Code Quality
 
-### 3. Location Screen
-- **Location Permission**: Grant location permission when prompted
-- **Current Location**: Displays your current GPS coordinates
-- **Geofence Check**: Compares your location with Delhi Airport (2km radius)
-- **Status Display**: Shows "Inside Airport Zone" or "Outside Airport Zone"
-- **Distance**: Shows exact distance to Delhi Airport
+### Project Structure
+```
+src/
+├── screens/           # Screen components
+│   ├── LoginScreen.js
+│   ├── ScanScreen.js
+│   ├── LocationScreen.js
+│   ├── ProfileScreen.js
+│   └── SplashScreen.js
+├── utils/            # Utility functions
+│   └── helpers.js
+├── constants/        # App constants
+│   ├── colors.js
+│   └── dimensions.js
+└── components/       # Reusable components
+```
 
-### 4. Navigation Flow
-- **Splash Screen** → **Login Screen** → **Scan Screen** → **Location Screen**
-- If user is already logged in, app starts directly at Scan Screen
-- Back navigation available between screens
-
-## Testing Scenarios
-
-### QR Code Testing
-- Use any QR code generator to create test codes
-- Try different types of data (URLs, text, contact info)
-- Test with various lighting conditions
-
-### Location Testing
-- **Inside Geofence**: Test near Delhi Airport (within 2km)
-- **Outside Geofence**: Test from any other location
-- **Permission Denied**: Test behavior when location permission is denied
-- **GPS Disabled**: Test when device GPS is turned off
-
-### Error Handling Testing
-- Deny camera permission and verify error message
-- Deny location permission and verify error message
-- Test with invalid email format
-- Test with empty form fields
-
-## Build for Production
+## Production Build
 
 ### Android APK
 ```bash
@@ -139,87 +96,12 @@ eas build:configure
 eas build --platform android --profile preview
 ```
 
-### Alternative: Local Build
+### iOS Build
 ```bash
-# Generate APK locally (requires Android Studio)
-npx expo run:android --variant release
+# Build for iOS (requires macOS)
+eas build --platform ios --profile preview
 ```
-
-## Key Features Implementation
-
-### 1. AsyncStorage Integration
-- User login data persists across app sessions
-- Automatic login check on app startup
-- Secure data storage with proper error handling
-
-### 2. Camera & Scanning
-- Multiple barcode format support
-- Real-time scanning with visual feedback
-- Permission handling with user-friendly messages
-- Scan result display with navigation options
-
-### 3. Location Services
-- High-accuracy GPS location fetching
-- Haversine formula for distance calculation
-- Geofence comparison with Delhi Airport
-- Real-time status updates
-
-### 4. UI/UX Design
-- Modern, clean interface
-- Consistent color scheme (#2196F3 primary)
-- Responsive design for different screen sizes
-- Loading states and error messages
-- Smooth navigation transitions
-
-## Code Quality Features
-
-- **Modular Architecture**: Separated screens, components, and utilities
-- **Error Handling**: Comprehensive try-catch blocks and user feedback
-- **Input Validation**: Email format validation and required field checks
-- **Constants Management**: Centralized configuration in helpers.js
-- **Clean Code**: Well-commented, readable code structure
-- **Type Safety**: Proper prop validation and error boundaries
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Camera Permission Denied**
-   - Go to device settings → Apps → [App Name] → Permissions
-   - Enable Camera permission manually
-
-2. **Location Permission Denied**
-   - Go to device settings → Apps → [App Name] → Permissions
-   - Enable Location permission manually
-
-3. **Build Errors**
-   - Clear cache: `npx expo start --clear`
-   - Reinstall dependencies: `rm -rf node_modules && npm install`
-
-4. **Metro Bundler Issues**
-   - Reset Metro cache: `npx expo start --clear`
-   - Restart development server
-
-## Performance Optimizations
-
-- Lazy loading of screens
-- Efficient camera usage with proper cleanup
-- Optimized location requests with high accuracy
-- Minimal re-renders with proper state management
-
-## Future Enhancements
-
-- [ ] Add biometric authentication
-- [ ] Implement offline mode
-- [ ] Add scan history
-- [ ] Include multiple geofence locations
-- [ ] Add push notifications
-- [ ] Implement dark mode
-
-## Contact
-
-For any questions or issues, please refer to the code comments or create an issue in the repository.
 
 ---
 
-**Note**: This app requires camera and location permissions to function properly. Make sure to grant these permissions when prompted for the best experience.
+**Note**: This app requires camera and location permissions to function properly. Grant these permissions when prompted for the best experience.
