@@ -1,20 +1,74 @@
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CONSTANTS } from './src/utils/helpers';
+
+// Import screens
+import SplashScreen from './src/screens/SplashScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import ScanScreen from './src/screens/ScanScreen';
+import LocationScreen from './src/screens/LocationScreen';
+
+const Stack = createStackNavigator();
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const userData = await AsyncStorage.getItem(CONSTANTS.STORAGE_KEYS.USER_DATA);
+      if (userData) {
+        setIsLoggedIn(true);
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+      <Stack.Navigator
+        initialRouteName={isLoggedIn ? "ScanScreen" : "LoginScreen"}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#2196F3',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
+        <Stack.Screen 
+          name="LoginScreen" 
+          component={LoginScreen}
+          options={{ title: 'Login' }}
+        />
+        <Stack.Screen 
+          name="ScanScreen" 
+          component={ScanScreen}
+          options={{ title: 'Scan Boarding Pass' }}
+        />
+        <Stack.Screen 
+          name="LocationScreen" 
+          component={LocationScreen}
+          options={{ title: 'Location Check' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
