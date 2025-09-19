@@ -22,7 +22,56 @@ A comprehensive React Native application demonstrating advanced mobile developme
 - **Storage**: AsyncStorage for local data persistence
 - **UI**: Custom components with responsive design
 
-## Quick Start
+### Key Libraries Used
+- **@expo/vector-icons**: Icon components
+- **expo-camera**: Camera access and barcode scanning
+- **expo-location**: GPS location services and geofencing
+- **@react-navigation/stack**: Screen navigation
+- **@react-native-async-storage/async-storage**: Local data persistence
+- **expo-status-bar**: Status bar management
+- **react-native-safe-area-context**: Safe area handling
+
+## Download & Installation
+
+### Direct APK Download
+📱 **[Download APK from Releases](https://github.com/Unknown-TM/Sherlock_Studio-React-Native/releases/latest)**
+
+### Android Installation Instructions
+1. **Download the APK** from the releases link above
+2. **Enable Unknown Sources**:
+   - Go to Settings → Security → Install unknown apps
+   - Select your file manager/browser → Allow from this source
+   - Or Settings → Apps → Special access → Install unknown apps
+3. **Install the APK**:
+   - Open the downloaded APK file
+   - Tap "Install" when prompted
+   - Grant camera and location permissions when requested
+
+### Android Version Compatibility
+- **Minimum**: Android 6.0 (API level 23)
+- **Recommended**: Android 8.0+ (API level 26+)
+- **Tested on**: Android 10, 11, 12, 13, 14
+
+## Feature Testing Guide
+
+### 1. Login Screen
+- **Test**: Enter your name and email address
+- **Expected**: Data persists when you close and reopen the app
+- **Verification**: Navigate away and return to see saved information
+
+### 2. QR/Barcode Scanning
+- **Test**: Tap the scan button and point camera at any QR code or barcode
+- **Expected**: App displays the decoded text content
+- **Tips**: Try scanning QR codes from websites, product barcodes, or generate test codes online
+
+### 3. Location Check
+- **Test**: Navigate to the location screen
+- **Expected**: 
+  - If you're inside Delhi Airport geofence: Shows "Inside Delhi Airport"
+  - If you're outside: Shows "Outside Delhi Airport" with distance
+- **Note**: Requires location permission and GPS to be enabled
+
+## Development Setup
 
 ### Prerequisites
 - **Node.js** (v14 or higher)
