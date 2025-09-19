@@ -79,6 +79,47 @@ src/
 └── components/       # Reusable components
 ```
 
+## 📱 APK Installation & Testing
+
+### Download APK
+**Direct Download**: [Download APK from Releases](https://github.com/Unknown-TM/Sherlock_Studio-React-Native/releases)
+
+### Android Installation Instructions
+1. **Enable Unknown Sources**:
+   - Go to `Settings` → `Security` → `Install unknown apps`
+   - Select your browser/file manager and enable "Allow from this source"
+   - Or go to `Settings` → `Privacy` → `Install unknown apps` (Android 8+)
+
+2. **Install APK**:
+   - Download the APK file from the releases page
+   - Open the downloaded file and tap "Install"
+   - Grant required permissions when prompted
+
+### Feature Testing Guide
+
+#### 🔐 Login Screen
+- **Test**: Enter any name and email address
+- **Expected**: Data persists locally and displays on Profile screen
+- **Validation**: Close and reopen app - login data should remain
+
+#### 📷 QR/Barcode Scanning
+- **Test**: Point camera at any QR code or barcode
+- **Expected**: Shows decoded text in a success screen
+- **Validation**: Try different types of codes (QR, UPC, EAN, etc.)
+
+#### 📍 Location Check
+- **Test**: Check current location status
+- **Expected**: Shows "Inside" or "Outside" Delhi Airport geofence
+- **Validation**: 
+  - Inside Delhi Airport: Should show "Inside" status
+  - Outside Delhi Airport: Should show "Outside" status
+  - Location accuracy may vary based on GPS signal
+
+### Android Compatibility
+- **Minimum Android Version**: Android 6.0 (API level 23)
+- **Recommended**: Android 8.0+ for optimal performance
+- **Permissions Required**: Camera, Location (Fine & Coarse)
+
 ## Production Build
 
 ### Android APK
@@ -101,6 +142,21 @@ eas build --platform android --profile preview
 # Build for iOS (requires macOS)
 eas build --platform ios --profile preview
 ```
+
+## 📚 Libraries & Dependencies
+
+### Core Libraries
+- **Expo SDK 54**: Development platform and tools
+- **React Native 0.81.4**: Mobile framework
+- **React Navigation 6**: Screen navigation
+- **AsyncStorage 2.2.0**: Local data persistence
+
+### Feature-Specific Libraries
+- **Expo Camera 17.0.8**: Barcode/QR code scanning
+- **Expo Location 19.0.7**: GPS and geofencing
+- **React Native Gesture Handler**: Touch interactions
+- **React Native Reanimated**: Smooth animations
+- **Expo Linear Gradient**: UI gradients
 
 ---
 
